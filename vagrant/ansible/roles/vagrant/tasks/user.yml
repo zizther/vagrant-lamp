@@ -1,0 +1,5 @@
+---
+- name: Copy dotfiles
+  copy:
+    src=roles/vagrant/files/dotfiles/
+    dest=/home/vagrant/

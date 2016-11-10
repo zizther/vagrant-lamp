@@ -1,0 +1,11 @@
+{
+    "name": "zizther/vagrant-lamp",
+    "description": "Vagrant Lamp",
+    "authors": [
+        {
+            "name": "Nathan Reed",
+            "email": "zizther@gmail.com"
+        }
+    ],
+    "require": {}
+}

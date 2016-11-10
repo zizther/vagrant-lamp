@@ -1,0 +1,34 @@
+---
+- name: Install apache
+  apt: name=apache2 state=present
+- name: Enable Apache extensions
+  apache2_module: name={{ item }} state=present
+  with_items:
+    - env
+    - setenvif
+    - headers
+    - expires
+    - alias
+    - rewrite
+    - proxy
+    - ssl
+    - proxy_http
+    - vhost_alias
+  notify:
+    - reload apache
+- name: Remove default virtual host
+  file:
+    path=/etc/apache2/sites-enabled/000-default.conf
+    state=absent
+  notify:
+    - reload apache
+- name: Remove default vhost dir
+  file:
+    path=/var/www/html
+    state=absent
+- name: Copy production settings
+  copy:
+    src=roles/webserver/files/security.conf
+    dest=/etc/apache2/conf-available/security.conf
+  notify:
+    - reload apache

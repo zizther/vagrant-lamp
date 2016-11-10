@@ -1,0 +1,53 @@
+<VirtualHost *:80>
+    DocumentRoot {{ web_root }}/public
+    ServerName dev-box.local
+    ServerAlias *.vagrantshare.com
+
+    SetEnv APP_ENV "development"
+
+    RewriteEngine On
+    #RewriteMap  lc int:tolower
+    #RewriteCond %{REQUEST_URI} [A-Z]
+    #RewriteRule (.*) ${lc:$1} [R=301,L]
+
+    LogFormat "%V %h %l %u %t \"%r\" %s %b"
+    ErrorLog {{ web_root }}/logs/vagrant-dev.error.log
+    LogLevel warn
+    CustomLog {{ web_root }}/logs/vagrant-dev.access.log combined
+
+    <Directory "{{ web_root }}">
+        Options +FollowSymLinks
+        AllowOverride All
+        Allow from all
+        Order Deny,Allow
+    </Directory>
+</VirtualHost>
+
+<VirtualHost *:443>
+    DocumentRoot {{ web_root }}
+    ServerName dev-box.local
+    ServerAlias *.vagrantshare.com
+
+    SetEnv APP_ENV "development"
+
+    RewriteEngine On
+    #RewriteMap  lc int:tolower
+    #RewriteCond %{REQUEST_URI} [A-Z]
+    #RewriteRule (.*) ${lc:$1} [R=301,L]
+
+    LogFormat "%V %h %l %u %t \"%r\" %s %b"
+    ErrorLog {{ web_root }}/logs/vagrant-dev-ssl.error.log
+    LogLevel warn
+    CustomLog {{ web_root }}/logs/vagrant-dev-ssl.access.log combined
+
+    <Directory "{{ web_root }}">
+        Options +FollowSymLinks
+        AllowOverride All
+        Allow from all
+        Order Deny,Allow
+    </Directory>
+
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/test/server.crt
+    SSLCertificateKeyFile /etc/ssl/test/server.key
+</VirtualHost>

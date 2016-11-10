@@ -1,0 +1,45 @@
+---
+- name: Copy test SSL config
+  copy:
+    src=roles/vagrant/files/ssl/
+    dest=/etc/ssl/test/
+
+- name: Create log dir
+  file: path=/var/www/logs state=directory
+
+- name: Copy across new virtual host
+  template:
+    src=vhost-template.conf.j2
+    dest=/etc/apache2/sites-available/vagrant.conf
+  notify:
+    - reload apache
+
+- name: Copy default php.ini
+  template:
+    src=roles/vagrant/files/php/php.ini
+    dest=/etc/php5/apache2/php.ini
+  notify:
+    - reload apache
+
+- name: Enable new vagrant virtual host
+  file:
+    src=/etc/apache2/sites-available/vagrant.conf
+    dest=/etc/apache2/sites-enabled/vagrant.conf
+    state=link
+  notify:
+    - reload apache
+
+- name: Copy default config
+  copy:
+    src=roles/vagrant/files/mysql/my.cnf
+    dest=/etc/mysql/my.cnf
+
+- name: Create default db and user
+  shell: /usr/bin/mysql -uroot < init.sql
+  args:
+    chdir: /vagrant/vagrant/ansible/roles/vagrant/files/mysql/
+
+- name: Copy mail config
+  copy:
+    src=roles/vagrant/files/mail/mailconfig.ini
+    dest=/etc/php5/apache2/conf.d/mailconfig.ini

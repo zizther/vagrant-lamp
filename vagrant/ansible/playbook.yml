@@ -1,0 +1,28 @@
+---
+- hosts: all
+  sudo: true
+
+  vars:
+    web_root: /var/www
+    php_packages: ["php5","php5-sqlite","libapache2-mod-php5","php5-intl","php5-xdebug","php5-mysql","php5-xsl","php5-curl","php5-imagick","php5-gd","php5-mcrypt","php-pear"]
+
+  pre_tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+
+  tasks:
+    - name: Install required packages
+      apt: name={{ item }} state=present
+      with_items:
+        - git
+        - vim
+        - wget
+        - curl
+        - postfix
+        - unzip
+
+  roles:
+    - webserver
+    - database
+    - vagrant
+
